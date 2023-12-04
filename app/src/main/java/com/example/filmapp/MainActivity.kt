@@ -1,5 +1,6 @@
 package com.example.filmapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -74,6 +75,8 @@ class MainActivity : AppCompatActivity(), popularMovieRecycleViewClickListener {
 
     override fun onPopularItemClicked(position: Int) {
         Log.d("OnPopularItemClicked", "onPopularItemClicked: pos: $position")
+        val intent: Intent = Intent(this, FilmDetailActivity::class.java)
+        startActivity(intent)
     }
 }
 
