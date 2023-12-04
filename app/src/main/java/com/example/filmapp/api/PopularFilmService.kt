@@ -10,6 +10,8 @@ data class MovieResult (
     val title: String,
     @Json(name = "overview") val description: String,
     @Json(name = "poster_path") val posterPath: String,
+    @Json(name = "release_date") val releaseDate: String,
+    @Json(name = "vote_average") val voteAverage: Double
 )
 
 data class MovieResultPage (
