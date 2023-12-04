@@ -81,31 +81,7 @@ class MainActivity : AppCompatActivity(), popularMovieRecycleViewClickListener {
     }
 }
 
-suspend fun getMovieDetailAPI(filmType: String, filmId: Int, apiKey: String = "9296a7b78a765608a22b237fe8e1dc2e"): MovieDetail?{
-    val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
 
-    val retrofit_obj = Retrofit.Builder()
-        .baseUrl("https://api.themoviedb.org/3/")
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .build()
-
-    try {
-        val service = retrofit_obj.create(FilmDetailService::class.java)
-        return service.getFilmDetail(
-           filmType = filmType,
-            filmId = filmId,
-            apiKey = apiKey
-        )
-    }
-    catch (e: HttpException){
-        Log.e(
-            "HTTP_ERROR",
-            "getMovieDetailAPI: HTTP ${e.code()} ${e.message()}: ${e.response()?.errorBody()}", )
-        return null
-    }
-}
 
 suspend fun getPopularFilm(filmType: String, apiKey: String = "9296a7b78a765608a22b237fe8e1dc2e"): MovieResultPage? {
     val moshi = Moshi.Builder()

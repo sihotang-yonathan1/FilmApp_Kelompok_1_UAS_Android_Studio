@@ -18,6 +18,7 @@ data class MovieDetail (
     @Json(name = "original_title") val originalTitle: String,
     @Json(name = "vote_average") val averageVote: Double,
     @Json(name = "runtime") val movieDuration: Int, // in minute(s)
+    @Json(name = "tagline") val tagline: String,
     val genres: List<FilmGenre>,
 )
 
