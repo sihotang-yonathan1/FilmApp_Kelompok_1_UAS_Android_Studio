@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">FilmApp</string>
+    <string name="most_popular_movie_label">Most Popular (Movie)</string>
+    <string name="app_name_label">FilmApp</string>
+</resources>
