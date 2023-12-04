@@ -28,7 +28,10 @@ import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+
 class MainActivity : AppCompatActivity(), popularMovieRecycleViewClickListener {
+    val FILM_ID_EXTRAS = "com.example.filmapp.FILM_ID_EXTRAS"
+    var data = ArrayList<MovieResult>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +40,6 @@ class MainActivity : AppCompatActivity(), popularMovieRecycleViewClickListener {
         val popularRecyclerView: RecyclerView = findViewById(R.id.most_popular_movie_recycler_view)
         val popularRecyclerViewLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         popularRecyclerView.layoutManager = popularRecyclerViewLayoutManager
-
-
-
-        var data = ArrayList<MovieResult>()
 
         fun setAdapter(){
             val moviePopularAdapter = popularMovieAdapter(data, this)
@@ -75,7 +74,9 @@ class MainActivity : AppCompatActivity(), popularMovieRecycleViewClickListener {
 
     override fun onPopularItemClicked(position: Int) {
         Log.d("OnPopularItemClicked", "onPopularItemClicked: pos: $position")
+        val filmId: Int = data[position].id
         val intent: Intent = Intent(this, FilmDetailActivity::class.java)
+        intent.putExtra(FILM_ID_EXTRAS, filmId)
         startActivity(intent)
     }
 }
