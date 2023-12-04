@@ -6,6 +6,13 @@
     android:padding="10dp"
     android:background="@color/design_default_color_background">
 
+    <ImageView
+        android:id="@+id/film_poster_image_view"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center_horizontal"
+        android:padding="4dp" />
+
     <TextView
         android:id="@+id/movie_item_label"
         android:layout_width="match_parent"
@@ -22,6 +29,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Description"
-        android:textColor="#000000" />/>
+        android:textColor="#000000" />
 
 </LinearLayout>
