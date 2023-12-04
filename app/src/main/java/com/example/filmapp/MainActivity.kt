@@ -27,7 +27,7 @@ import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), popularMovieRecycleViewClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         var data = ArrayList<MovieResult>()
 
         fun setAdapter(){
-            val moviePopularAdapter = popularMovieAdapter(data)
+            val moviePopularAdapter = popularMovieAdapter(data, this)
             popularRecyclerView.adapter = moviePopularAdapter
         }
 
@@ -51,15 +51,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         runBlocking {
-            var filmDetailDeffered = async {
-                getMovieDetailAPI(filmType = "movie", filmId = 1075794)
-            }
+//            var filmDetailDeffered = async {
+//                getMovieDetailAPI(filmType = "movie", filmId = 1075794)
+//            }
 
             var popularFilmDeffered = async {
                 getPopularFilm(filmType = "movie")
             }
 
-            val filmDetail = filmDetailDeffered.await()
+            // val filmDetail = filmDetailDeffered.await()
             val popularFilmPage = popularFilmDeffered.await()
 
             if (popularFilmPage != null) {
@@ -67,9 +67,13 @@ class MainActivity : AppCompatActivity() {
                 setAdapter()
             }
 
-            Log.d("filmDetail", "onCreate: $filmDetail")
+            // Log.d("filmDetail", "onCreate: $filmDetail")
             Log.d("popularFilmPage", "onCreate: $popularFilmPage")
         }
+    }
+
+    override fun onPopularItemClicked(position: Int) {
+        Log.d("OnPopularItemClicked", "onPopularItemClicked: pos: $position")
     }
 }
 
