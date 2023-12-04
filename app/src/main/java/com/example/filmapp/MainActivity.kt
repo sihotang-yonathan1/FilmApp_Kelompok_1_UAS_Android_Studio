@@ -34,7 +34,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val popularRecyclerView: RecyclerView = findViewById(R.id.most_popular_movie_recycler_view)
-        popularRecyclerView.layoutManager = LinearLayoutManager(this)
+        val popularRecyclerViewLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        popularRecyclerView.layoutManager = popularRecyclerViewLayoutManager
 
 
 
