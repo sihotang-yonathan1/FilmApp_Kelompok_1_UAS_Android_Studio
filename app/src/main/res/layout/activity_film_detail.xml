@@ -93,9 +93,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="172dp"
-                android:orientation="vertical"
-                android:layout_margin="10dp">
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/film_detail_recommended_label"
@@ -108,7 +108,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/film_detail_recommended_recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"
+                    android:scrollbars="horizontal" />
 
             </LinearLayout>
 

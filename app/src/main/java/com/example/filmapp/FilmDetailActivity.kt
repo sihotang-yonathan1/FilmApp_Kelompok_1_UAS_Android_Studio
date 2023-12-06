@@ -6,12 +6,16 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.filmapp.api.FilmDetailService
 import com.example.filmapp.api.MovieDetail
 import com.example.filmapp.api.MovieDetailInfoService
+import com.example.filmapp.api.MovieResult
 import com.example.filmapp.api.model.MovieKeywordResult
 import com.example.filmapp.api.model.MovieRecommendationModel
+import com.example.filmapp.api.model.MovieRecommendationResult
 import com.example.filmapp.api.model.MovieReviewModel
 import com.example.filmapp.api.model.MovieSimilarResultModel
 import com.squareup.moshi.Moshi
@@ -31,7 +35,9 @@ val retrofitObject: Retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .build()
 
-class FilmDetailActivity : AppCompatActivity() {
+class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickListener  {
+    val FILM_ID_EXTRAS = "com.example.filmapp.FILM_ID_EXTRAS"
+    var data = ArrayList<MovieResult>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_film_detail)
@@ -43,6 +49,15 @@ class FilmDetailActivity : AppCompatActivity() {
         val movieOverviewTextView: TextView = findViewById(R.id.film_detail_overview_content_text_view)
         val moviePosterImageView: ImageView = findViewById(R.id.film_detail_poster_image_view)
         val movieTagline: TextView = findViewById(R.id.film_detail_tagline_text_view)
+
+        val recommendedMovieRecyclerView: RecyclerView = findViewById(R.id.film_detail_recommended_recycler_view)
+        val recommendedMovieRecyclerViewViewLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recommendedMovieRecyclerView.layoutManager = recommendedMovieRecyclerViewViewLayoutManager
+
+        fun setRecommendationAdapter(){
+            val moviePopularAdapter = popularMovieAdapter(data, this)
+            recommendedMovieRecyclerView.adapter = moviePopularAdapter
+        }
 
         fun updateUI(data: MovieDetail?){
             if (data != null) {
@@ -78,10 +93,33 @@ class FilmDetailActivity : AppCompatActivity() {
             if (movieDetailData != null){
                 updateUI(movieDetailData)
             }
+            if (movieRecommendation != null){
+                // convert to MovieResult
+                for (result in movieRecommendation.results){
+                    data.add(
+                        MovieResult(
+                            id = result.id,
+                            title = result.title,
+                            description = result.description,
+                            posterPath = result.posterPath,
+                            releaseDate = result.releaseDate,
+                            voteAverage = result.voteAverage
+                        )
+                    )
+                }
+
+                // set adapter
+                setRecommendationAdapter()
+            }
 
         }
-
-
+    }
+    override fun onPopularItemClicked(position: Int) {
+        Log.d("OnPopularItemClicked", "onPopularItemClicked: pos: $position")
+        val filmId: Int = data[position].id
+        val intent: Intent = Intent(this, FilmDetailActivity::class.java)
+        intent.putExtra(FILM_ID_EXTRAS, filmId)
+        startActivity(intent)
     }
 }
 
