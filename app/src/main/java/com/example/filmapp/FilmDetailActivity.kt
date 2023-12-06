@@ -9,6 +9,10 @@ import android.widget.TextView
 import coil.load
 import com.example.filmapp.api.FilmDetailService
 import com.example.filmapp.api.MovieDetail
+import com.example.filmapp.api.MovieDetailInfoService
+import com.example.filmapp.api.model.MovieRecommendationModel
+import com.example.filmapp.api.model.MovieReviewModel
+import com.example.filmapp.api.model.MovieSimilarResultModel
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.async
@@ -16,6 +20,15 @@ import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+
+val moshi: Moshi = Moshi.Builder()
+    .add(KotlinJsonAdapterFactory())
+    .build()
+
+val retrofitObject: Retrofit = Retrofit.Builder()
+    .baseUrl("https://api.themoviedb.org/3/")
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .build()
 
 class FilmDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,10 +53,21 @@ class FilmDetailActivity : AppCompatActivity() {
         }
 
         runBlocking {
+            // deferred item
             val movieDetailDeffered = async {
                 getMovieDetailAPI(filmType = "movie", filmId = filmId)
             }
+            val movieReviewDeferred = async { getMovieReview(movieId = filmId) }
+            val movieSimilarDeferred = async { getMovieSimilar(movieId = filmId) }
+
+            // await the deferred
             val movieDetailData = movieDetailDeffered.await()
+            val movieReview = movieReviewDeferred.await()
+            val movieSimilar = movieSimilarDeferred.await()
+
+            Log.d("movieReview", "onCreate: $movieReview")
+            Log.d("movieSimilar", "onCreate: $movieSimilar")
+
             if (movieDetailData != null){
                 updateUI(movieDetailData)
             }
@@ -55,15 +79,6 @@ class FilmDetailActivity : AppCompatActivity() {
 }
 
 suspend fun getMovieDetailAPI(filmType: String, filmId: Int, apiKey: String = "9296a7b78a765608a22b237fe8e1dc2e"): MovieDetail?{
-    val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
-
-    val retrofitObject = Retrofit.Builder()
-        .baseUrl("https://api.themoviedb.org/3/")
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .build()
-
     return try {
         val service = retrofitObject.create(FilmDetailService::class.java)
         service.getFilmDetail(
@@ -79,3 +94,55 @@ suspend fun getMovieDetailAPI(filmType: String, filmId: Int, apiKey: String = "9
         null
     }
 }
+
+suspend fun getMovieRecommendation(movieId: Int, apiKey: String = "9296a7b78a765608a22b237fe8e1dc2e"): MovieRecommendationModel?{
+    return try {
+        val service = retrofitObject.create(MovieDetailInfoService::class.java);
+        return service.getRecommendation(
+            movieId = movieId,
+            apiKey = apiKey
+        )
+
+    }
+    catch (e: HttpException){
+        Log.e(
+            "HTTP_ERROR",
+            "getMovieRecommendation: HTTP ${e.code()} ${e.message()}: ${e.response()?.errorBody()}", )
+        null
+    }
+}
+
+suspend fun getMovieSimilar(movieId: Int, apiKey: String = "9296a7b78a765608a22b237fe8e1dc2e"): MovieSimilarResultModel?{
+    return try {
+        val service = retrofitObject.create(MovieDetailInfoService::class.java);
+        return service.getSimilarMovie(
+            movieId = movieId,
+            apiKey = apiKey
+        )
+
+    }
+    catch (e: HttpException){
+        Log.e(
+            "HTTP_ERROR",
+            "getMovieSimilar: HTTP ${e.code()} ${e.message()}: ${e.response()?.errorBody()}", )
+        null
+    }
+}
+
+suspend fun getMovieReview(movieId: Int, apiKey: String = "9296a7b78a765608a22b237fe8e1dc2e"): MovieReviewModel?{
+    return try {
+        val service = retrofitObject.create(MovieDetailInfoService::class.java);
+        return service.getMovieReview(
+            movieId = movieId,
+            apiKey = apiKey
+        )
+
+    }
+    catch (e: HttpException){
+        Log.e(
+            "HTTP_ERROR",
+            "getMovieReview: HTTP ${e.code()} ${e.message()}: ${e.response()?.errorBody()}", )
+        null
+    }
+}
+
