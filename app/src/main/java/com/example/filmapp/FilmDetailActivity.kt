@@ -18,9 +18,10 @@ import com.example.filmapp.api.MovieResult
 import com.example.filmapp.api.model.MovieCreditModel
 import com.example.filmapp.api.model.MovieKeywordResult
 import com.example.filmapp.api.model.MovieRecommendationModel
-import com.example.filmapp.api.model.MovieRecommendationResult
 import com.example.filmapp.api.model.MovieReviewModel
 import com.example.filmapp.api.model.MovieSimilarResultModel
+import com.example.filmapp.layout_configuration.popularMovie.popularMovieAdapter
+import com.example.filmapp.layout_configuration.popularMovie.popularMovieRecycleViewClickListener
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.async
@@ -38,7 +39,7 @@ val retrofitObject: Retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .build()
 
-class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickListener  {
+class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickListener {
     val FILM_ID_EXTRAS = "com.example.filmapp.FILM_ID_EXTRAS"
     var data = ArrayList<MovieResult>()
     var similarMovieData = ArrayList<MovieResult>()

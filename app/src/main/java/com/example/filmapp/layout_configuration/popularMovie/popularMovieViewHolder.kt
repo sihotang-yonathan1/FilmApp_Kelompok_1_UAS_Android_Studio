@@ -1,14 +1,14 @@
-package com.example.filmapp
+package com.example.filmapp.layout_configuration.popularMovie
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemClickListener
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.example.filmapp.R
 import com.example.filmapp.api.MovieResult
 
 class popularMovieViewHolder(inflater: LayoutInflater, parent: ViewGroup, val listener: popularMovieRecycleViewClickListener):

@@ -1,9 +1,7 @@
-package com.example.filmapp
+package com.example.filmapp.layout_configuration.popularMovie
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemClickListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.filmapp.api.MovieResult
 
