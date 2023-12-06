@@ -25,6 +25,8 @@ import com.example.filmapp.layout_configuration.cast.CastMovieAdapter
 import com.example.filmapp.layout_configuration.cast.CastMovieRecycleViewClickListener
 import com.example.filmapp.layout_configuration.popularMovie.popularMovieAdapter
 import com.example.filmapp.layout_configuration.popularMovie.popularMovieRecycleViewClickListener
+import com.example.filmapp.layout_configuration.recommendedMovie.RecommendedMovieAdapter
+import com.example.filmapp.layout_configuration.recommendedMovie.RecommendedMovieRecycleViewClickListener
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.async
@@ -42,8 +44,12 @@ val retrofitObject: Retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .build()
 
-class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickListener, CastMovieRecycleViewClickListener {
-    val FILM_ID_EXTRAS = "com.example.filmapp.FilmDetailActivity.FILM_ID_EXTRAS"
+class FilmDetailActivity :
+    AppCompatActivity(),
+    popularMovieRecycleViewClickListener,
+    CastMovieRecycleViewClickListener,
+    RecommendedMovieRecycleViewClickListener{
+    val FILM_ID_EXTRAS = "com.example.filmapp.FILM_ID_EXTRAS"
     var data = ArrayList<MovieResult>()
     var similarMovieData = ArrayList<MovieResult>()
     var castInfoData = ArrayList<MovieCastInfo>()
@@ -76,7 +82,7 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
 
         fun setRecommendationAdapter(){
             if (data.size != 0) {
-                val movieRecommendationAdapter = popularMovieAdapter(data, this)
+                val movieRecommendationAdapter = RecommendedMovieAdapter(data, this)
                 recommendedMovieRecyclerView.adapter = movieRecommendationAdapter
             }
             else {
@@ -198,6 +204,14 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
 
     override fun onCastItemClicked(position: Int) {
         Log.d("OnCastItemClicked", "onCastItemClicked: pos: $position")
+    }
+
+    override fun onRecommendedItemClicked(position: Int) {
+        Log.d("OnRecommendedItemClicked", "onRecommendedItemClicked: pos: $position")
+        val filmId: Int = data[position].id
+        val intent: Intent = Intent(this, FilmDetailActivity::class.java)
+        intent.putExtra(FILM_ID_EXTRAS, filmId)
+        startActivity(intent)
     }
 }
 
