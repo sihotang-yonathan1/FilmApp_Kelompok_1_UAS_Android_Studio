@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FilmSearchActivity">
+    tools:context=".FilmSearchActivity"
+    android:background="#baafa3">
 
     <SearchView
         android:id="@+id/film_search_search_view"
@@ -37,7 +38,8 @@
         android:layout_marginTop="16dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/film_search_search_view"
-        tools:layout_editor_absoluteX="0dp">
+        tools:layout_editor_absoluteX="0dp"
+        android:background="#fef0e5">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/film_search_recycler_view"
