@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.GridView
+import android.widget.SearchView
+import android.widget.SearchView.OnQueryTextListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.filmapp.api.MovieResult
@@ -20,11 +22,13 @@ import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.lang.reflect.Array
 
-class FilmSearchActivity : AppCompatActivity(), FilmSearchRecycleViewClickListener {
+class FilmSearchActivity : AppCompatActivity(), FilmSearchRecycleViewClickListener{
     val FILM_ID_EXTRAS = "com.example.filmapp.FILM_ID_EXTRAS"
     val SEARCH_QUERY = "com.example.filmapp.SEARCH_QUERY"
     var searchData = ArrayList<MovieResult>()
+    var searchQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +36,12 @@ class FilmSearchActivity : AppCompatActivity(), FilmSearchRecycleViewClickListen
 
         val intent = intent
         val queryText: String = intent.getStringExtra(SEARCH_QUERY).toString()
+        searchQuery = queryText
 
-       val searchRecyclerView: RecyclerView = findViewById(R.id.film_search_recycler_view)
+        val searchView: SearchView = findViewById(R.id.film_search_search_view)
+
+
+        val searchRecyclerView: RecyclerView = findViewById(R.id.film_search_recycler_view)
         val searchRecyclerViewLayoutManager = GridLayoutManager(this, 2)
         searchRecyclerView.layoutManager = searchRecyclerViewLayoutManager
 
@@ -42,20 +50,36 @@ class FilmSearchActivity : AppCompatActivity(), FilmSearchRecycleViewClickListen
             searchRecyclerView.adapter = searchAdapter
         }
 
-        runBlocking {
-            val searchResultDeferred = async {
-                getSearchFilm(query = queryText)
-            }
-
-            val searchResultPage = searchResultDeferred.await()
-            if (searchResultPage != null){
-                for (searchResultItem in searchResultPage.results){
-                    searchData.add(searchResultItem)
+        fun updateState() {
+            Log.d("updateState - searchQuery", "updateState: $searchQuery")
+            runBlocking {
+                val searchResultDeferred = async {
+                    getSearchFilm(query = searchQuery!!)
                 }
-                setSearchAdapter()
+
+                val searchResultPage = searchResultDeferred.await()
+                Log.d("updateState", "updateState: searchResultPage: $searchResultPage")
+                if (searchResultPage != null) {
+                    searchData = ArrayList(searchResultPage.results)
+                    setSearchAdapter()
+                }
             }
         }
+        updateState()
 
+        searchView.setOnQueryTextListener (object: SearchView.OnQueryTextListener{
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null){
+                    searchQuery = query
+                    updateState()
+                }
+                return false
+            }
+        })
 
     }
 
