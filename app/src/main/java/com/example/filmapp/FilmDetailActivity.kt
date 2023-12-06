@@ -15,11 +15,14 @@ import com.example.filmapp.api.FilmDetailService
 import com.example.filmapp.api.MovieDetail
 import com.example.filmapp.api.MovieDetailInfoService
 import com.example.filmapp.api.MovieResult
+import com.example.filmapp.api.model.MovieCastInfo
 import com.example.filmapp.api.model.MovieCreditModel
 import com.example.filmapp.api.model.MovieKeywordResult
 import com.example.filmapp.api.model.MovieRecommendationModel
 import com.example.filmapp.api.model.MovieReviewModel
 import com.example.filmapp.api.model.MovieSimilarResultModel
+import com.example.filmapp.layout_configuration.cast.CastMovieAdapter
+import com.example.filmapp.layout_configuration.cast.CastMovieRecycleViewClickListener
 import com.example.filmapp.layout_configuration.popularMovie.popularMovieAdapter
 import com.example.filmapp.layout_configuration.popularMovie.popularMovieRecycleViewClickListener
 import com.squareup.moshi.Moshi
@@ -39,10 +42,11 @@ val retrofitObject: Retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .build()
 
-class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickListener {
+class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickListener, CastMovieRecycleViewClickListener {
     val FILM_ID_EXTRAS = "com.example.filmapp.FILM_ID_EXTRAS"
     var data = ArrayList<MovieResult>()
     var similarMovieData = ArrayList<MovieResult>()
+    var castInfoData = ArrayList<MovieCastInfo>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_film_detail)
@@ -65,6 +69,11 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
         val similarMovieRecyclerViewViewLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         similarMovieRecyclerView.layoutManager = similarMovieRecyclerViewViewLayoutManager
 
+        // cast recycler view
+        val castRecyclerView: RecyclerView = findViewById(R.id.film_detail_cast_recycler_view)
+        val castRecyclerViewLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        castRecyclerView.layoutManager = castRecyclerViewLayoutManager
+
         fun setRecommendationAdapter(){
             if (data.size != 0) {
                 val movieRecommendationAdapter = popularMovieAdapter(data, this)
@@ -84,6 +93,14 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
             else {
                 val similarLayout: LinearLayout = findViewById(R.id.fim_detail_similar_linear_layout)
                 similarLayout.visibility = View.GONE
+            }
+        }
+
+        fun setCastAdapter(){
+            if (castInfoData.size != 0){
+                // set Adapter here
+                val castAdapter = CastMovieAdapter(castInfoData, this)
+                castRecyclerView.adapter = castAdapter
             }
         }
 
@@ -124,6 +141,8 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
             if (movieDetailData != null){
                 updateUI(movieDetailData)
             }
+
+            // set recommendation data to data variable
             if (movieRecommendation != null){
                 // convert to MovieResult
                 for (result in movieRecommendation.results){
@@ -143,6 +162,7 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
                 setRecommendationAdapter()
             }
 
+            // set similarMovieData
             if (movieSimilar != null ){
                 for (similarMovieResult in movieSimilar.results){
                     similarMovieData.add(
@@ -159,6 +179,13 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
                 setSimilarAdapter()
             }
 
+            // set CastInfoData
+            if (movieCredit != null){
+                for (movieCreditData in movieCredit.casts){
+                    castInfoData.add(movieCreditData)
+                }
+                setCastAdapter()
+            }
         }
     }
     override fun onPopularItemClicked(position: Int) {
@@ -167,6 +194,10 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
         val intent: Intent = Intent(this, FilmDetailActivity::class.java)
         intent.putExtra(FILM_ID_EXTRAS, filmId)
         startActivity(intent)
+    }
+
+    override fun onCastItemClicked(position: Int) {
+        Log.d("OnCastItemClicked", "onCastItemClicked: pos: $position")
     }
 }
 
