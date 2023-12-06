@@ -1,6 +1,6 @@
 # FilmApp
 Aplikasi ini merupakan aplikasi mobile yang bertujuan untuk menampilkan film-film yang sedang populer saat ini. Aplikasi ini menggunakan data yang sumbernya diambil dari TMDB API.  
-Aplikasi ini dibuat dengan menggunakan Android Studio dan menggunakan bahas Kotlin.
+Aplikasi ini dibuat dengan menggunakan Android Studio dan menggunakan bahasa Kotlin.
 
 ## Pengembang
 Aplikasi ini dibuat oleh Kelompok Zeus Thunderbolts (Kelompok 1)  
