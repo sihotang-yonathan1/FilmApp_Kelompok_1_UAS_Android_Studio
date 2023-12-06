@@ -27,6 +27,8 @@ import com.example.filmapp.layout_configuration.popularMovie.popularMovieAdapter
 import com.example.filmapp.layout_configuration.popularMovie.popularMovieRecycleViewClickListener
 import com.example.filmapp.layout_configuration.recommendedMovie.RecommendedMovieAdapter
 import com.example.filmapp.layout_configuration.recommendedMovie.RecommendedMovieRecycleViewClickListener
+import com.example.filmapp.layout_configuration.similarMovie.SimilarMovieAdapter
+import com.example.filmapp.layout_configuration.similarMovie.SimilarMovieRecycleViewClickListener
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.async
@@ -48,7 +50,8 @@ class FilmDetailActivity :
     AppCompatActivity(),
     popularMovieRecycleViewClickListener,
     CastMovieRecycleViewClickListener,
-    RecommendedMovieRecycleViewClickListener{
+    RecommendedMovieRecycleViewClickListener,
+    SimilarMovieRecycleViewClickListener{
     val FILM_ID_EXTRAS = "com.example.filmapp.FILM_ID_EXTRAS"
     var data = ArrayList<MovieResult>()
     var similarMovieData = ArrayList<MovieResult>()
@@ -93,7 +96,7 @@ class FilmDetailActivity :
 
         fun setSimilarAdapter(){
             if (similarMovieData.size != 0 ) {
-                val movieSimilarAdapter = popularMovieAdapter(similarMovieData, this)
+                val movieSimilarAdapter = SimilarMovieAdapter(similarMovieData, this)
                 similarMovieRecyclerView.adapter = movieSimilarAdapter
             }
             else {
@@ -169,20 +172,22 @@ class FilmDetailActivity :
             }
 
             // set similarMovieData
-            if (movieSimilar != null ){
-                for (similarMovieResult in movieSimilar.results){
-                    similarMovieData.add(
-                        MovieResult(
-                            id = similarMovieResult.id,
-                            title = similarMovieResult.title,
-                            description = similarMovieResult.description,
-                            posterPath = similarMovieResult.posterPath.toString(),
-                            releaseDate = similarMovieResult.releaseDate,
-                            voteAverage = similarMovieResult.voteAverage
+            if (movieSimilar != null) {
+                if (movieSimilar.results.isNotEmpty()){
+                    for (similarMovieResult in movieSimilar.results){
+                        similarMovieData.add(
+                            MovieResult(
+                                id = similarMovieResult.id,
+                                title = similarMovieResult.title,
+                                description = similarMovieResult.description,
+                                posterPath = similarMovieResult.posterPath.toString(),
+                                releaseDate = similarMovieResult.releaseDate,
+                                voteAverage = similarMovieResult.voteAverage
+                            )
                         )
-                    )
+                    }
+                    setSimilarAdapter()
                 }
-                setSimilarAdapter()
             }
 
             // set CastInfoData
@@ -209,6 +214,14 @@ class FilmDetailActivity :
     override fun onRecommendedItemClicked(position: Int) {
         Log.d("OnRecommendedItemClicked", "onRecommendedItemClicked: pos: $position")
         val filmId: Int = data[position].id
+        val intent: Intent = Intent(this, FilmDetailActivity::class.java)
+        intent.putExtra(FILM_ID_EXTRAS, filmId)
+        startActivity(intent)
+    }
+
+    override fun onSimilarItemClicked(position: Int) {
+        Log.d("OnSimilarItemClicked", "onRecommendedItemClicked: pos: $position")
+        val filmId: Int = similarMovieData[position].id
         val intent: Intent = Intent(this, FilmDetailActivity::class.java)
         intent.putExtra(FILM_ID_EXTRAS, filmId)
         startActivity(intent)
