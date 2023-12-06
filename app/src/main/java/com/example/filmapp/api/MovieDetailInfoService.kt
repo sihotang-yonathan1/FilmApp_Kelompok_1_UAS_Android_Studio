@@ -1,5 +1,6 @@
 package com.example.filmapp.api
 
+import com.example.filmapp.api.model.MovieKeywordResult
 import com.example.filmapp.api.model.MovieRecommendationModel
 import com.example.filmapp.api.model.MovieReviewModel
 import com.example.filmapp.api.model.MovieSimilarResultModel
@@ -43,5 +44,5 @@ interface MovieDetailInfoService {
     suspend fun getMovieKeyword(
         @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String,
-    )
+    ): MovieKeywordResult
 }

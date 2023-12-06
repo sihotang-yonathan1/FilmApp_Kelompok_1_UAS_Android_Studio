@@ -10,6 +10,7 @@ import coil.load
 import com.example.filmapp.api.FilmDetailService
 import com.example.filmapp.api.MovieDetail
 import com.example.filmapp.api.MovieDetailInfoService
+import com.example.filmapp.api.model.MovieKeywordResult
 import com.example.filmapp.api.model.MovieRecommendationModel
 import com.example.filmapp.api.model.MovieReviewModel
 import com.example.filmapp.api.model.MovieSimilarResultModel
@@ -59,17 +60,17 @@ class FilmDetailActivity : AppCompatActivity() {
             }
             val movieReviewDeferred = async { getMovieReview(movieId = filmId) }
             val movieSimilarDeferred = async { getMovieSimilar(movieId = filmId) }
-            val movieKeywordDeferred = async { getMovieRecommendation(movieId = filmId) }
+            val movieRecommendationDeferred = async { getMovieRecommendation(movieId = filmId) }
 
             // await the deferred
             val movieDetailData = movieDetailDeffered.await()
             val movieReview = movieReviewDeferred.await()
             val movieSimilar = movieSimilarDeferred.await()
-            val movieKeyword = movieKeywordDeferred.await()
+            val movieRecommendation = movieRecommendationDeferred.await()
 
             Log.d("movieReview", "onCreate: $movieReview")
             Log.d("movieSimilar", "onCreate: $movieSimilar")
-            Log.d("movieKeyword", "onCreate: $movieKeyword")
+            Log.d("movieRecommendation", "onCreate: $movieRecommendation")
 
             if (movieDetailData != null){
                 updateUI(movieDetailData)
@@ -136,6 +137,23 @@ suspend fun getMovieReview(movieId: Int, apiKey: String = "9296a7b78a765608a22b2
     return try {
         val service = retrofitObject.create(MovieDetailInfoService::class.java);
         return service.getMovieReview(
+            movieId = movieId,
+            apiKey = apiKey
+        )
+
+    }
+    catch (e: HttpException){
+        Log.e(
+            "HTTP_ERROR",
+            "getMovieReview: HTTP ${e.code()} ${e.message()}: ${e.response()?.errorBody()}", )
+        null
+    }
+}
+
+suspend fun getMovieKeyword(movieId: Int, apiKey: String = "9296a7b78a765608a22b237fe8e1dc2e"): MovieKeywordResult?{
+    return try {
+        val service = retrofitObject.create(MovieDetailInfoService::class.java);
+        return service.getMovieKeyword(
             movieId = movieId,
             apiKey = apiKey
         )
