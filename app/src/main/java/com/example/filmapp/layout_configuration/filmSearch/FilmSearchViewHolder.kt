@@ -31,7 +31,9 @@ class FilmSearchViewHolder(inflater: LayoutInflater, parent: ViewGroup, val list
         if (data.posterPath != null) {
             moviePosterImage?.load("https://image.tmdb.org/t/p/w300${data.posterPath}")
         }
-
+        else {
+            moviePosterImage?.load("https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=")
+        }
     }
 
     override fun onClick(v: View?) {
