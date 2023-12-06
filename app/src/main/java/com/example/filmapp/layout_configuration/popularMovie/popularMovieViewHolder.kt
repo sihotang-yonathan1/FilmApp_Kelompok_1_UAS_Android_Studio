@@ -31,7 +31,9 @@ class popularMovieViewHolder(inflater: LayoutInflater, parent: ViewGroup, val li
 
     fun bind (data: MovieResult){
         movieTitle?.text = data.title
-        moviePosterImage?.load("https://image.tmdb.org/t/p/original${data.posterPath}")
+        if (data.posterPath != null) {
+            moviePosterImage?.load("https://image.tmdb.org/t/p/w342${data.posterPath}")
+        }
         movieVoteAverage?.text = data.voteAverage.toString()
         movieReleaseDate?.text = data.releaseDate
     }

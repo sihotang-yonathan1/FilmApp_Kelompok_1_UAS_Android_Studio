@@ -43,7 +43,7 @@ val retrofitObject: Retrofit = Retrofit.Builder()
     .build()
 
 class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickListener, CastMovieRecycleViewClickListener {
-    val FILM_ID_EXTRAS = "com.example.filmapp.FILM_ID_EXTRAS"
+    val FILM_ID_EXTRAS = "com.example.filmapp.FilmDetailActivity.FILM_ID_EXTRAS"
     var data = ArrayList<MovieResult>()
     var similarMovieData = ArrayList<MovieResult>()
     var castInfoData = ArrayList<MovieCastInfo>()
