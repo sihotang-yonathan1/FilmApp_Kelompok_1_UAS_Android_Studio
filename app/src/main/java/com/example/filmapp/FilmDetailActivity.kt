@@ -59,14 +59,17 @@ class FilmDetailActivity : AppCompatActivity() {
             }
             val movieReviewDeferred = async { getMovieReview(movieId = filmId) }
             val movieSimilarDeferred = async { getMovieSimilar(movieId = filmId) }
+            val movieKeywordDeferred = async { getMovieRecommendation(movieId = filmId) }
 
             // await the deferred
             val movieDetailData = movieDetailDeffered.await()
             val movieReview = movieReviewDeferred.await()
             val movieSimilar = movieSimilarDeferred.await()
+            val movieKeyword = movieKeywordDeferred.await()
 
             Log.d("movieReview", "onCreate: $movieReview")
             Log.d("movieSimilar", "onCreate: $movieSimilar")
+            Log.d("movieKeyword", "onCreate: $movieKeyword")
 
             if (movieDetailData != null){
                 updateUI(movieDetailData)
