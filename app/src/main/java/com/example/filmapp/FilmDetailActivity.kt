@@ -4,7 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,6 +40,7 @@ val retrofitObject: Retrofit = Retrofit.Builder()
 class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickListener  {
     val FILM_ID_EXTRAS = "com.example.filmapp.FILM_ID_EXTRAS"
     var data = ArrayList<MovieResult>()
+    var similarMovieData = ArrayList<MovieResult>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_film_detail)
@@ -50,13 +53,36 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
         val moviePosterImageView: ImageView = findViewById(R.id.film_detail_poster_image_view)
         val movieTagline: TextView = findViewById(R.id.film_detail_tagline_text_view)
 
+        // recommended Recycler View
         val recommendedMovieRecyclerView: RecyclerView = findViewById(R.id.film_detail_recommended_recycler_view)
         val recommendedMovieRecyclerViewViewLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recommendedMovieRecyclerView.layoutManager = recommendedMovieRecyclerViewViewLayoutManager
 
+        // similar Recycler View
+        val similarMovieRecyclerView: RecyclerView = findViewById(R.id.film_detail_similar_recycler_view)
+        val similarMovieRecyclerViewViewLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        similarMovieRecyclerView.layoutManager = similarMovieRecyclerViewViewLayoutManager
+
         fun setRecommendationAdapter(){
-            val moviePopularAdapter = popularMovieAdapter(data, this)
-            recommendedMovieRecyclerView.adapter = moviePopularAdapter
+            if (data.size != 0) {
+                val movieRecommendationAdapter = popularMovieAdapter(data, this)
+                recommendedMovieRecyclerView.adapter = movieRecommendationAdapter
+            }
+            else {
+                val recommendationLayout: LinearLayout = findViewById(R.id.fim_detail_recommended_linear_layout)
+                recommendationLayout.visibility = View.GONE
+            }
+        }
+
+        fun setSimilarAdapter(){
+            if (similarMovieData.size != 0 ) {
+                val movieSimilarAdapter = popularMovieAdapter(similarMovieData, this)
+                similarMovieRecyclerView.adapter = movieSimilarAdapter
+            }
+            else {
+                val similarLayout: LinearLayout = findViewById(R.id.fim_detail_similar_linear_layout)
+                similarLayout.visibility = View.GONE
+            }
         }
 
         fun updateUI(data: MovieDetail?){
@@ -73,22 +99,22 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
             val movieDetailDeffered = async {
                 getMovieDetailAPI(filmType = "movie", filmId = filmId)
             }
-            val movieReviewDeferred = async { getMovieReview(movieId = filmId) }
+            // val movieReviewDeferred = async { getMovieReview(movieId = filmId) }
             val movieSimilarDeferred = async { getMovieSimilar(movieId = filmId) }
             val movieRecommendationDeferred = async { getMovieRecommendation(movieId = filmId) }
-            val movieKeywordDeferred = async { getMovieKeyword(movieId = filmId) }
+            // val movieKeywordDeferred = async { getMovieKeyword(movieId = filmId) }
 
             // await the deferred
             val movieDetailData = movieDetailDeffered.await()
-            val movieReview = movieReviewDeferred.await()
+            // val movieReview = movieReviewDeferred.await()
             val movieSimilar = movieSimilarDeferred.await()
             val movieRecommendation = movieRecommendationDeferred.await()
-            val movieKeyword = movieKeywordDeferred.await()
+            // val movieKeyword = movieKeywordDeferred.await()
 
-            Log.d("movieReview", "onCreate: $movieReview")
+            // Log.d("movieReview", "onCreate: $movieReview")
             Log.d("movieSimilar", "onCreate: $movieSimilar")
             Log.d("movieRecommendation", "onCreate: $movieRecommendation")
-            Log.d("movieKeyword", "onCreate: $movieKeyword")
+            // Log.d("movieKeyword", "onCreate: $movieKeyword")
 
             if (movieDetailData != null){
                 updateUI(movieDetailData)
@@ -110,6 +136,22 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
 
                 // set adapter
                 setRecommendationAdapter()
+            }
+
+            if (movieSimilar != null ){
+                for (similarMovieResult in movieSimilar.results){
+                    similarMovieData.add(
+                        MovieResult(
+                            id = similarMovieResult.id,
+                            title = similarMovieResult.title,
+                            description = similarMovieResult.description,
+                            posterPath = similarMovieResult.posterPath.toString(),
+                            releaseDate = similarMovieResult.releaseDate,
+                            voteAverage = similarMovieResult.voteAverage
+                        )
+                    )
+                }
+                setSimilarAdapter()
             }
 
         }
