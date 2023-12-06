@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.filmapp.api.MovieResult
@@ -21,8 +22,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 
-class MainActivity : AppCompatActivity(), popularMovieRecycleViewClickListener {
+class MainActivity : AppCompatActivity(), popularMovieRecycleViewClickListener, SearchView.OnQueryTextListener {
     val FILM_ID_EXTRAS = "com.example.filmapp.FILM_ID_EXTRAS"
+    val SEARCH_QUERY = "com.example.filmapp.SEARCH_QUERY"
     var data = ArrayList<MovieResult>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +34,9 @@ class MainActivity : AppCompatActivity(), popularMovieRecycleViewClickListener {
         val popularRecyclerView: RecyclerView = findViewById(R.id.most_popular_movie_recycler_view)
         val popularRecyclerViewLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         popularRecyclerView.layoutManager = popularRecyclerViewLayoutManager
+
+        val filmSearchView: SearchView = findViewById(R.id.film_search_view)
+        filmSearchView.setOnQueryTextListener(this)
 
         fun setAdapter(){
             val moviePopularAdapter = popularMovieAdapter(data, this)
@@ -63,13 +68,24 @@ class MainActivity : AppCompatActivity(), popularMovieRecycleViewClickListener {
             Log.d("popularFilmPage", "onCreate: $popularFilmPage")
         }
     }
-
     override fun onPopularItemClicked(position: Int) {
         Log.d("OnPopularItemClicked", "onPopularItemClicked: pos: $position")
         val filmId: Int = data[position].id
         val intent: Intent = Intent(this, FilmDetailActivity::class.java)
         intent.putExtra(FILM_ID_EXTRAS, filmId)
         startActivity(intent)
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return false
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        Log.d("onQueryTextSubmit", "onQueryTextSubmit: $query")
+        val intent = Intent(this, FilmSearchActivity::class.java)
+        intent.putExtra(SEARCH_QUERY, query)
+        startActivity(intent)
+        return false
     }
 }
 

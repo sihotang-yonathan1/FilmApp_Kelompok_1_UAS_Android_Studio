@@ -7,6 +7,17 @@
     android:layout_height="match_parent">
 
 
+    <SearchView
+        android:id="@+id/film_search_view"
+        android:layout_width="236dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        android:iconifiedByDefault="false"
+        android:background="@drawable/search_outline"/>
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -21,24 +32,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/most_popular_movie_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="32dp"
-        android:text="@string/most_popular_movie_label"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/most_popular_movie_recycler_view"
         android:layout_width="352dp"
         android:layout_height="406dp"
         android:layout_margin="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.39"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/most_popular_movie_label" />
+
+    <TextView
+        android:id="@+id/most_popular_movie_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="80dp"
+        android:text="@string/most_popular_movie_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

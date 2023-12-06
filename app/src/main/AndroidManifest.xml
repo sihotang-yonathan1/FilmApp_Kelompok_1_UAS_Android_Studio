@@ -16,6 +16,9 @@
         android:theme="@style/Theme.FilmApp"
         tools:targetApi="31">
         <activity
+            android:name=".FilmSearchActivity"
+            android:exported="false" />
+        <activity
             android:name=".FilmDetailActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
