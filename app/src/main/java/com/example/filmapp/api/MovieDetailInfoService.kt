@@ -1,5 +1,6 @@
 package com.example.filmapp.api
 
+import com.example.filmapp.api.model.MovieCreditModel
 import com.example.filmapp.api.model.MovieKeywordResult
 import com.example.filmapp.api.model.MovieRecommendationModel
 import com.example.filmapp.api.model.MovieReviewModel
@@ -45,4 +46,10 @@ interface MovieDetailInfoService {
         @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String,
     ): MovieKeywordResult
+
+    @GET("movie/{movie_id}/credits")
+    suspend fun getMovieCredit(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String,
+    ): MovieCreditModel
 }

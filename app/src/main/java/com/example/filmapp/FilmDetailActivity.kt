@@ -15,6 +15,7 @@ import com.example.filmapp.api.FilmDetailService
 import com.example.filmapp.api.MovieDetail
 import com.example.filmapp.api.MovieDetailInfoService
 import com.example.filmapp.api.MovieResult
+import com.example.filmapp.api.model.MovieCreditModel
 import com.example.filmapp.api.model.MovieKeywordResult
 import com.example.filmapp.api.model.MovieRecommendationModel
 import com.example.filmapp.api.model.MovieRecommendationResult
@@ -103,6 +104,7 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
             val movieSimilarDeferred = async { getMovieSimilar(movieId = filmId) }
             val movieRecommendationDeferred = async { getMovieRecommendation(movieId = filmId) }
             // val movieKeywordDeferred = async { getMovieKeyword(movieId = filmId) }
+            val movieCreditDeferred = async { getMovieCredit(movieId = filmId) }
 
             // await the deferred
             val movieDetailData = movieDetailDeffered.await()
@@ -110,10 +112,12 @@ class FilmDetailActivity : AppCompatActivity(), popularMovieRecycleViewClickList
             val movieSimilar = movieSimilarDeferred.await()
             val movieRecommendation = movieRecommendationDeferred.await()
             // val movieKeyword = movieKeywordDeferred.await()
+            val movieCredit = movieCreditDeferred.await()
 
             // Log.d("movieReview", "onCreate: $movieReview")
             Log.d("movieSimilar", "onCreate: $movieSimilar")
             Log.d("movieRecommendation", "onCreate: $movieRecommendation")
+            Log.d("movieCredit", "onCreate: $movieCredit")
             // Log.d("movieKeyword", "onCreate: $movieKeyword")
 
             if (movieDetailData != null){
@@ -246,6 +250,23 @@ suspend fun getMovieKeyword(movieId: Int, apiKey: String = "9296a7b78a765608a22b
         Log.e(
             "HTTP_ERROR",
             "getMovieReview: HTTP ${e.code()} ${e.message()}: ${e.response()?.errorBody()}", )
+        null
+    }
+}
+
+suspend fun getMovieCredit(movieId: Int, apiKey: String = "9296a7b78a765608a22b237fe8e1dc2e"): MovieCreditModel?{
+    return try {
+        val service = retrofitObject.create(MovieDetailInfoService::class.java);
+        return service.getMovieCredit(
+            movieId = movieId,
+            apiKey = apiKey
+        )
+
+    }
+    catch (e: HttpException){
+        Log.e(
+            "HTTP_ERROR",
+            "getMovieRecommendation: HTTP ${e.code()} ${e.message()}: ${e.response()?.errorBody()}", )
         null
     }
 }
