@@ -3,4 +3,5 @@
     <string name="most_popular_movie_label">Most Popular (Movie)</string>
     <string name="app_name_label">FilmApp</string>
     <string name="film_detail_overview_label">Overview</string>
+    <string name="top_rated_movie_label">Top Rated (Movie)</string>
 </resources>
