@@ -5,8 +5,8 @@ import com.squareup.moshi.Json
 data class MovieReviewAuthorDetails(
     val name: String,
     val username: String,
-    @Json(name = "avatar_path") val avatarPath: String,
-    @Json(name = "rating") val reviewNumber: Double
+    @Json(name = "avatar_path") val avatarPath: String? = null,
+    @Json(name = "rating") val reviewNumber: Double? = null,
 )
 
 data class MovieReviewResult(

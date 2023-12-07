@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -51,7 +53,8 @@ class FilmDetailActivity :
     popularMovieRecycleViewClickListener,
     CastMovieRecycleViewClickListener,
     RecommendedMovieRecycleViewClickListener,
-    SimilarMovieRecycleViewClickListener{
+    SimilarMovieRecycleViewClickListener,
+    OnClickListener{
     val FILM_ID_EXTRAS = "com.example.filmapp.FILM_ID_EXTRAS"
     var data = ArrayList<MovieResult>()
     var similarMovieData = ArrayList<MovieResult>()
@@ -82,6 +85,9 @@ class FilmDetailActivity :
         val castRecyclerView: RecyclerView = findViewById(R.id.film_detail_cast_recycler_view)
         val castRecyclerViewLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         castRecyclerView.layoutManager = castRecyclerViewLayoutManager
+
+        val movieReviewLayout: ConstraintLayout = findViewById(R.id.film_detail_review_contraint_layout)
+        movieReviewLayout.setOnClickListener(this)
 
         fun setRecommendationAdapter(){
             if (data.size != 0) {
@@ -226,6 +232,14 @@ class FilmDetailActivity :
         intent.putExtra(FILM_ID_EXTRAS, filmId)
         startActivity(intent)
     }
+
+    // onClick for redirect to review Activity
+    override fun onClick(v: View?) {
+        val filmId: Int = intent.getIntExtra("com.example.filmapp.FILM_ID_EXTRAS", -1)
+        val intent: Intent = Intent(this, FilmReviewActivity::class.java)
+        intent.putExtra(FILM_ID_EXTRAS, filmId)
+        startActivity(intent)
+    }
 }
 
 suspend fun getMovieDetailAPI(filmType: String, filmId: Int, apiKey: String = "9296a7b78a765608a22b237fe8e1dc2e"): MovieDetail?{
@@ -275,23 +289,6 @@ suspend fun getMovieSimilar(movieId: Int, apiKey: String = "9296a7b78a765608a22b
         Log.e(
             "HTTP_ERROR",
             "getMovieSimilar: HTTP ${e.code()} ${e.message()}: ${e.response()?.errorBody()}", )
-        null
-    }
-}
-
-suspend fun getMovieReview(movieId: Int, apiKey: String = "9296a7b78a765608a22b237fe8e1dc2e"): MovieReviewModel?{
-    return try {
-        val service = retrofitObject.create(MovieDetailInfoService::class.java);
-        return service.getMovieReview(
-            movieId = movieId,
-            apiKey = apiKey
-        )
-
-    }
-    catch (e: HttpException){
-        Log.e(
-            "HTTP_ERROR",
-            "getMovieReview: HTTP ${e.code()} ${e.message()}: ${e.response()?.errorBody()}", )
         null
     }
 }
